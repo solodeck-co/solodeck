@@ -182,4 +182,4 @@ if __name__ == "__main__":
     os.makedirs(os.path.dirname(DB), exist_ok=True)
     init()
     print("\n✓ Solodeck running at http://localhost:5000\n")
-    app.run(debug=True, port=5000)
+    app.run(debug=False, host='0.0.0.0', port=5000)
