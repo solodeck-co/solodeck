@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+{% block title %}Solodeck — Build Different. Sell More.{% endblock %}
+
+{% block extra_styles %}
+<style>
+  /* HERO */
+  .hero { min-height: 90vh; display: grid; grid-template-columns: 1fr 1fr; align-items: center; border-bottom: 1px solid var(--line); }
+  .hero-left { padding: 6rem 3rem; }
+  .hero-eyebrow { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+  .eyebrow-line { width: 40px; height: 2px; background: var(--electric); }
+  h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(5rem, 8vw, 9rem); line-height: 0.9; letter-spacing: 0.02em; margin-bottom: 2rem; }
+  h1 .outline { -webkit-text-stroke: 1.5px var(--white); color: transparent; }
+  .hero-sub { font-size: 1rem; color: var(--gray); max-width: 400px; line-height: 1.8; margin-bottom: 2.5rem; }
+  .hero-sub strong { color: var(--white); }
+  .btn-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .hero-right { background: var(--mid); height: 100%; display: flex; align-items: center; justify-content: center; padding: 4rem; border-left: 1px solid var(--line); }
+  .hero-card { width: 100%; max-width: 340px; border: 1px solid var(--line); border-radius: 3px; overflow: hidden; }
+  .hero-card-img { aspect-ratio: 1; background: linear-gradient(135deg, #111 0%, #1a1a0a 100%); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 7rem; color: rgba(232,255,0,0.06); position: relative; }
+  .hero-card-body { padding: 1.5rem; background: var(--black); }
+  .card-tag { font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--electric); font-weight: 600; margin-bottom: 0.4rem; }
+  .card-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.04em; margin-bottom: 0.4rem; }
+  .card-desc { font-size: 0.78rem; color: var(--gray); line-height: 1.7; margin-bottom: 1.25rem; }
+  .card-footer { display: flex; justify-content: space-between; align-items: center; }
+  .card-price { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; }
+  .badge { position: absolute; top: 1rem; left: 1rem; background: var(--electric); color: var(--black); font-size: 0.58rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.25rem 0.7rem; }
+
+  /* TICKER */
+  .ticker { overflow: hidden; padding: 1rem 0; background: var(--mid); border-bottom: 1px solid var(--line); }
+  .ticker-track { display: flex; gap: 3rem; animation: ticker 22s linear infinite; white-space: nowrap; }
+  .ticker-item { display: flex; align-items: center; gap: 1.5rem; flex-shrink: 0; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray); }
+  .ticker-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--electric); }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* CATEGORIES */
+  .categories { padding: 5rem 3rem; border-bottom: 1px solid var(--line); }
+  .sec-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; }
+  .sec-link { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray); border-bottom: 1px solid var(--line); padding-bottom: 2px; transition: color 0.2s, border-color 0.2s; }
+  .sec-link:hover { color: var(--electric); border-color: var(--electric); }
+  .cat-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .cat-card { background: var(--black); padding: 3rem 2.5rem; min-height: 260px; display: flex; flex-direction: column; justify-content: space-between; transition: background 0.3s; position: relative; overflow: hidden; }
+  .cat-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--electric); transform: scaleX(0); transition: transform 0.3s; transform-origin: left; }
+  .cat-card:hover { background: var(--mid); }
+  .cat-card:hover::after { transform: scaleX(1); }
+  .cat-num { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; color: var(--line); line-height: 1; }
+  .cat-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.04em; margin-bottom: 0.3rem; }
+  .cat-sub { font-size: 0.7rem; color: var(--gray); letter-spacing: 0.08em; text-transform: uppercase; }
+  .cat-arrow { width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 1.5rem; transition: all 0.2s; }
+  .cat-card:hover .cat-arrow { background: var(--electric); border-color: var(--electric); color: var(--black); }
+
+  /* FEATURED PRODUCTS */
+  .featured { padding: 5rem 3rem; border-bottom: 1px solid var(--line); }
+  .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .product-card { background: var(--black); transition: background 0.3s; }
+  .product-card:hover { background: var(--mid); }
+  .product-img { aspect-ratio: 1; background: var(--mid); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 5rem; color: var(--line); position: relative; overflow: hidden; transition: color 0.3s; }
+  .product-card:hover .product-img { color: rgba(232,255,0,0.15); }
+  .product-body { padding: 1.5rem; }
+  .product-cat { font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--electric); font-weight: 600; margin-bottom: 0.3rem; }
+  .product-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.04em; margin-bottom: 0.4rem; }
+  .product-desc { font-size: 0.76rem; color: var(--gray); line-height: 1.7; margin-bottom: 1.2rem; }
+  .product-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 1.2rem; }
+  .product-price { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; }
+
+  /* PROMO SPLIT */
+  .promo { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); }
+  .promo-left { background: var(--electric); padding: 5rem 4rem; display: flex; flex-direction: column; gap: 2rem; }
+  .promo-left .eyebrow { color: rgba(0,0,0,0.5); }
+  .promo-left h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 5vw, 5rem); color: var(--black); line-height: 0.92; letter-spacing: 0.02em; }
+  .promo-left p { font-size: 0.9rem; color: rgba(0,0,0,0.6); line-height: 1.8; max-width: 320px; }
+  .promo-right { padding: 5rem 4rem; display: flex; flex-direction: column; justify-content: center; gap: 0; }
+  .stat { padding: 2rem 0; border-bottom: 1px solid var(--line); }
+  .stat:last-child { border-bottom: none; }
+  .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; color: var(--electric); line-height: 1; }
+  .stat-label { font-size: 0.75rem; color: var(--gray); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.25rem; }
+
+  /* FEATURES */
+  .features { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--line); }
+  .feature { padding: 2.5rem 2rem; border-right: 1px solid var(--line); }
+  .feature:last-child { border-right: none; }
+  .feature-icon { font-size: 1.4rem; margin-bottom: 0.75rem; }
+  .feature-title { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.06em; margin-bottom: 0.4rem; }
+  .feature-desc { font-size: 0.75rem; color: var(--gray); line-height: 1.7; }
+
+  /* NEWSLETTER */
+  .newsletter { padding: 5rem 3rem; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; border-bottom: 1px solid var(--line); }
+  .newsletter h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 3vw, 3rem); letter-spacing: 0.04em; margin-bottom: 0.75rem; }
+  .newsletter p { color: var(--gray); font-size: 0.88rem; line-height: 1.8; }
+  .email-row { display: flex; border: 1px solid var(--line); border-radius: 2px; overflow: hidden; }
+  .email-input { flex: 1; background: var(--mid); border: none; padding: 0.9rem 1.2rem; font-family: 'Manrope', sans-serif; font-size: 0.9rem; color: var(--white); outline: none; }
+  .email-input::placeholder { color: var(--gray); }
+  .email-btn { background: var(--electric); color: var(--black); border: none; padding: 0.9rem 1.4rem; font-family: 'Manrope', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; white-space: nowrap; }
+  .email-btn:hover { opacity: 0.85; }
+  .email-note { margin-top: 0.6rem; font-size: 0.7rem; color: var(--gray); }
+
+  @media (max-width: 900px) {
+    .hero, .promo, .newsletter { grid-template-columns: 1fr; }
+    .hero-right, .promo-right { display: none; }
+    .hero-left { padding: 4rem 1.5rem; }
+    .cat-grid { grid-template-columns: 1fr; }
+    .product-grid { grid-template-columns: 1fr 1fr; }
+    .features { grid-template-columns: 1fr 1fr; }
+    .categories, .featured, .promo-left { padding: 3rem 1.5rem; }
+    .newsletter { padding: 3rem 1.5rem; }
+  }
+  @media (max-width: 600px) {
+    .product-grid { grid-template-columns: 1fr; }
+    .features { grid-template-columns: 1fr; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">
+      <div class="eyebrow-line"></div>
+      <div class="eyebrow" style="margin:0">Digital + Physical Products</div>
+    </div>
+    <h1>BUILD<br><span class="outline">DIFFERENT.</span><br>SELL<br>MORE.</h1>
+    <p class="hero-sub">Tools and gear for <strong>creators, entrepreneurs, and side hustlers</strong> who are building something real. Digital downloads. Physical products. All in one place.</p>
+    <div class="btn-row">
+      <a href="/shop" class="btn btn-electric">Shop Everything</a>
+      <a href="/shop?type=digital" class="btn btn-outline">Browse Digital →</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    {% if products %}
+    {% set p = products[0] %}
+    <div class="hero-card">
+      <div class="hero-card-img">
+        <span class="badge">Featured</span>
+        {{ p['image_label'] }}
+      </div>
+      <div class="hero-card-body">
+        <div class="card-tag">{{ p['category'] }}</div>
+        <div class="card-name">{{ p['name'] }}</div>
+        <div class="card-desc">{{ p['description'][:80] }}...</div>
+        <div class="card-footer">
+          <div class="card-price">${{ "%.0f"|format(p['price']) }}</div>
+          <form action="/cart/add/{{ p['id'] }}" method="POST">
+            <button type="submit" class="btn btn-electric btn-sm">Add to Cart</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    {% for item in ["Digital Downloads","Physical Products","Instant Access","Free Shipping Over $50","New Drops Weekly","Commercial License Included","Digital Downloads","Physical Products","Instant Access","Free Shipping Over $50","New Drops Weekly","Commercial License Included"] %}
+    <div class="ticker-item">{{ item }} <div class="ticker-dot"></div></div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="categories">
+  <div class="sec-header">
+    <div>
+      <div class="eyebrow">Browse by Category</div>
+      <div class="section-title">SHOP THE<br>COLLECTION</div>
+    </div>
+    <a href="/shop" class="sec-link">View All →</a>
+  </div>
+  <div class="cat-grid">
+    <a href="/shop?type=digital" class="cat-card">
+      <div class="cat-num">01</div>
+      <div>
+        <div class="cat-name">Digital Downloads</div>
+        <div class="cat-sub">Templates · Guides · Bundles</div>
+        <div class="cat-arrow">→</div>
+      </div>
+    </a>
+    <a href="/shop?category=Apparel" class="cat-card">
+      <div class="cat-num">02</div>
+      <div>
+        <div class="cat-name">Apparel</div>
+        <div class="cat-sub">Tees · Hoodies · Hats</div>
+        <div class="cat-arrow">→</div>
+      </div>
+    </a>
+    <a href="/shop?category=Accessories" class="cat-card">
+      <div class="cat-num">03</div>
+      <div>
+        <div class="cat-name">Accessories</div>
+        <div class="cat-sub">Gear · Lifestyle · Tools</div>
+        <div class="cat-arrow">→</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- FEATURED PRODUCTS -->
+<section class="featured">
+  <div class="sec-header">
+    <div>
+      <div class="eyebrow">Featured Products</div>
+      <div class="section-title">NEW ARRIVALS</div>
+    </div>
+    <a href="/shop" class="sec-link">View All →</a>
+  </div>
+  <div class="product-grid">
+    {% for p in products[:3] %}
+    <div class="product-card">
+      <a href="/product/{{ p['id'] }}">
+        <div class="product-img">
+          {% if p['type'] == 'digital' %}
+          <span class="tag-digital" style="position:absolute;top:1rem;left:1rem;">Digital</span>
+          {% else %}
+          <span class="tag-physical" style="position:absolute;top:1rem;left:1rem;">Physical</span>
+          {% endif %}
+          {{ p['image_label'] }}
+        </div>
+      </a>
+      <div class="product-body">
+        <div class="product-cat">{{ p['category'] }}</div>
+        <div class="product-name">{{ p['name'] }}</div>
+        <div class="product-desc">{{ p['description'][:90] }}...</div>
+        <div class="product-footer">
+          <div class="product-price">${{ "%.0f"|format(p['price']) }}</div>
+          <form action="/cart/add/{{ p['id'] }}" method="POST">
+            <button type="submit" class="btn btn-outline btn-sm">Add to Cart</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- FEATURES -->
+<div class="features">
+  {% for icon, title, desc in [
+    ("⚡","Instant Download","Digital products delivered immediately after purchase. No waiting, no hassle."),
+    ("📦","Fast Shipping","Physical orders ship within 2–3 business days. Free shipping over $50."),
+    ("✓","Commercial License","All digital products include a full commercial use license. Use for clients too."),
+    ("↩","Easy Returns","30-day returns on physical products. Something wrong? We make it right.")
+  ] %}
+  <div class="feature">
+    <div class="feature-icon">{{ icon }}</div>
+    <div class="feature-title">{{ title }}</div>
+    <div class="feature-desc">{{ desc }}</div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- PROMO SPLIT -->
+<section class="promo">
+  <div class="promo-left">
+    <div class="eyebrow">New This Week</div>
+    <h2>DROP SEASON IS HERE.</h2>
+    <p>New physical products drop every Friday. Sign up to get early access and 15% off your first order.</p>
+    <a href="#newsletter" class="btn btn-dark" style="align-self:flex-start">Get Early Access</a>
+  </div>
+  <div class="promo-right">
+    <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Products Sold</div></div>
+    <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Satisfaction Rate</div></div>
+    <div class="stat"><div class="stat-num">2–3</div><div class="stat-label">Days to Ship</div></div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter" id="newsletter">
+  <div>
+    <div class="eyebrow">Stay in the Loop</div>
+    <h2>FIRST TO KNOW.</h2>
+    <p>New drops, exclusive discounts, and early access — straight to your inbox. No spam. Unsubscribe anytime.</p>
+  </div>
+  <div>
+    <form action="/subscribe" method="POST">
+      <div class="email-row">
+        <input class="email-input" type="email" name="email" placeholder="your@email.com" required/>
+        <button type="submit" class="email-btn">Subscribe</button>
+      </div>
+    </form>
+    <div class="email-note">Join 1,000+ subscribers. Get 15% off your first order when you sign up.</div>
+  </div>
+</section>
+
+{% endblock %}

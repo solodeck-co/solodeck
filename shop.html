@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Shop — Solodeck{% endblock %}
+{% block extra_styles %}
+<style>
+.page-header{padding:4rem 3rem 2rem;border-bottom:1px solid var(--line)}
+.page-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,6vw,6rem);letter-spacing:0.04em}
+.filters{display:flex;gap:0.5rem;flex-wrap:wrap;padding:1.5rem 3rem;border-bottom:1px solid var(--line);background:var(--mid)}
+.filter-btn{padding:0.5rem 1.2rem;font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:1px solid var(--line);border-radius:2px;color:var(--gray);background:transparent;cursor:pointer;text-decoration:none;transition:all .2s}
+.filter-btn:hover,.filter-btn.active{background:var(--electric);border-color:var(--electric);color:var(--black)}
+.shop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin:3rem}
+.product-card{background:var(--black);transition:background .3s}
+.product-card:hover{background:var(--mid)}
+.product-img{aspect-ratio:1;background:var(--mid);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:5rem;color:var(--line);position:relative;transition:color .3s}
+.product-card:hover .product-img{color:rgba(232,255,0,0.15)}
+.product-body{padding:1.5rem}
+.product-cat{font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--electric);font-weight:600;margin-bottom:0.3rem}
+.product-name{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.04em;margin-bottom:0.4rem}
+.product-desc{font-size:0.76rem;color:var(--gray);line-height:1.7;margin-bottom:1.2rem}
+.product-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:1.2rem}
+.product-price{font-family:'Bebas Neue',sans-serif;font-size:1.4rem}
+.empty{padding:6rem 3rem;text-align:center;color:var(--gray)}
+@media(max-width:900px){.shop-grid{grid-template-columns:1fr 1fr;margin:1.5rem}}
+@media(max-width:600px){.shop-grid{grid-template-columns:1fr}.page-header,.filters{padding-left:1.5rem;padding-right:1.5rem}}
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="eyebrow">All Products</div>
+  <h1>SHOP THE COLLECTION</h1>
+</div>
+<div class="filters">
+  <a href="/shop" class="filter-btn {% if active_type=='all' and active_cat=='all' %}active{% endif %}">All</a>
+  <a href="/shop?type=digital" class="filter-btn {% if active_type=='digital' %}active{% endif %}">Digital</a>
+  <a href="/shop?type=physical" class="filter-btn {% if active_type=='physical' %}active{% endif %}">Physical</a>
+  {% for cat in categories %}
+  <a href="/shop?category={{ cat['category'] }}" class="filter-btn {% if active_cat==cat['category'] %}active{% endif %}">{{ cat['category'] }}</a>
+  {% endfor %}
+</div>
+{% if products %}
+<div class="shop-grid">
+  {% for p in products %}
+  <div class="product-card">
+    <a href="/product/{{ p['id'] }}">
+      <div class="product-img">
+        {% if p['type']=='digital' %}<span class="tag-digital" style="position:absolute;top:1rem;left:1rem">Digital</span>
+        {% else %}<span class="tag-physical" style="position:absolute;top:1rem;left:1rem">Physical</span>{% endif %}
+        {{ p['image_label'] }}
+      </div>
+    </a>
+    <div class="product-body">
+      <div class="product-cat">{{ p['category'] }}</div>
+      <div class="product-name">{{ p['name'] }}</div>
+      <div class="product-desc">{{ p['description'][:90] }}...</div>
+      <div class="product-footer">
+        <div class="product-price">${{ "%.0f"|format(p['price']) }}</div>
+        <form action="/cart/add/{{ p['id'] }}" method="POST">
+          <button type="submit" class="btn btn-outline btn-sm">Add to Cart</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty"><p>No products found. <a href="/shop" style="color:var(--electric)">Clear filters →</a></p></div>
+{% endif %}
+{% endblock %}

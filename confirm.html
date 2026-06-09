@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Order Confirmed — Solodeck{% endblock %}
+{% block content %}
+<div style="max-width:600px;margin:6rem auto;padding:0 2rem;text-align:center">
+  <div style="font-size:3rem;margin-bottom:1.5rem">⚡</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:3.5rem;letter-spacing:0.04em;color:var(--electric);margin-bottom:0.5rem">ORDER CONFIRMED</div>
+  <p style="color:var(--gray);font-size:0.9rem;line-height:1.8;margin-bottom:2rem">Thanks {{ order['name'] }}! Order #{{ order['id'] }} is placed. Confirmation going to <strong style="color:var(--white)">{{ order['email'] }}</strong>.</p>
+  <div style="background:var(--mid);border:1px solid var(--line);border-radius:3px;padding:2rem;margin-bottom:2rem;text-align:left">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.06em;margin-bottom:1rem;color:var(--gray)">ORDER SUMMARY</div>
+    {% for item in order['items'] %}
+    <div style="display:flex;justify-content:space-between;font-size:0.85rem;padding:0.5rem 0;border-bottom:1px solid var(--line)">
+      <span>{{ item['name'] }} × {{ item['qty'] }}</span>
+      <span style="color:var(--electric)">${{ "%.2f"|format(item['price']*item['qty']) }}</span>
+    </div>
+    {% endfor %}
+    <div style="display:flex;justify-content:space-between;font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.04em;margin-top:1rem">
+      <span>Total</span><span style="color:var(--electric)">${{ "%.2f"|format(order['total']) }}</span>
+    </div>
+  </div>
+  <a href="/shop" class="btn btn-electric">Continue Shopping</a>
+</div>
+{% endblock %}

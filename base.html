@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Solodeck{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--black:#080808;--white:#F2F2F0;--electric:#E8FF00;--mid:#1C1C1C;--gray:#888880;--line:#2A2A2A}
+    html{scroll-behavior:smooth}
+    body{background:var(--black);color:var(--white);font-family:'Manrope',sans-serif;font-weight:400;line-height:1.6}
+    a{color:inherit;text-decoration:none}
+    nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1.2rem 3rem;border-bottom:1px solid var(--line);background:rgba(8,8,8,0.96);backdrop-filter:blur(12px)}
+    .logo{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:0.08em}
+    .logo span{color:var(--electric)}
+    .nav-links{display:flex;gap:2rem;align-items:center}
+    .nav-links a{font-size:0.78rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray);transition:color .2s}
+    .nav-links a:hover{color:var(--white)}
+    .nav-cart{display:flex;align-items:center;gap:0.5rem;border:1px solid var(--line);padding:0.5rem 1rem;border-radius:2px;transition:border-color .2s}
+    .nav-cart:hover{border-color:var(--electric)}
+    .nav-cart span{font-size:0.78rem;font-weight:600}
+    .cart-badge{background:var(--electric);color:var(--black);border-radius:50%;width:18px;height:18px;font-size:0.6rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+    .nav-cta{background:var(--electric);color:var(--black)!important;padding:0.6rem 1.4rem;font-weight:700;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;border-radius:2px;transition:opacity .2s}
+    .nav-cta:hover{opacity:0.85}
+    .flashes{padding:0.75rem 3rem}
+    .flash{padding:0.7rem 1.2rem;margin-bottom:0.4rem;border-radius:2px;font-size:0.85rem;font-weight:500}
+    .flash.success{background:rgba(232,255,0,0.08);border:1px solid var(--electric);color:var(--electric)}
+    .flash.error{background:rgba(255,80,80,0.08);border:1px solid #f55;color:#f88}
+    .flash.info{background:rgba(255,255,255,0.04);border:1px solid var(--line);color:var(--gray)}
+    .btn{display:inline-block;padding:0.85rem 2rem;font-family:'Manrope',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;border-radius:2px;border:none;cursor:pointer;transition:opacity .2s,transform .15s;text-align:center}
+    .btn:hover{opacity:0.85;transform:translateY(-1px)}
+    .btn-electric{background:var(--electric);color:var(--black)}
+    .btn-outline{background:transparent;color:var(--white);border:1px solid var(--line)}
+    .btn-outline:hover{border-color:var(--electric);color:var(--electric);opacity:1}
+    .btn-dark{background:var(--mid);color:var(--white);border:1px solid var(--line)}
+    .btn-sm{padding:0.5rem 1rem;font-size:0.72rem}
+    .eyebrow{font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--electric);font-weight:600;margin-bottom:0.5rem}
+    .section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,4vw,4rem);line-height:1;letter-spacing:0.04em}
+    .tag-digital{background:rgba(232,255,0,0.12);color:var(--electric);font-size:0.6rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;padding:0.25rem 0.6rem;border-radius:1px}
+    .tag-physical{background:rgba(255,255,255,0.08);color:var(--white);font-size:0.6rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;padding:0.25rem 0.6rem;border-radius:1px}
+    footer{border-top:1px solid var(--line);padding:3rem;display:flex;justify-content:space-between;align-items:center;margin-top:4rem}
+    .footer-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.08em;margin-bottom:0.25rem}
+    .footer-logo span{color:var(--electric)}
+    .footer-copy{font-size:0.72rem;color:var(--gray)}
+    .footer-links{display:flex;gap:2rem}
+    .footer-links a{font-size:0.72rem;color:var(--gray);letter-spacing:0.08em;text-transform:uppercase;transition:color .2s}
+    .footer-links a:hover{color:var(--electric)}
+    @media(max-width:768px){nav{padding:1rem 1.5rem}.nav-links{display:none}footer{flex-direction:column;gap:1.5rem;padding:2rem 1.5rem;text-align:center}.footer-links{flex-wrap:wrap;justify-content:center}}
+  </style>
+  {% block extra_styles %}{% endblock %}
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">SOLO<span>DECK</span></a>
+  <div class="nav-links">
+    <a href="/shop">Shop</a>
+    <a href="/shop?type=digital">Digital</a>
+    <a href="/shop?type=physical">Physical</a>
+    <a href="/admin">Admin</a>
+  </div>
+  <div style="display:flex;gap:1rem;align-items:center">
+    <a href="/cart" class="nav-cart">
+      <span>Cart</span>
+      <div class="cart-badge">{{ cart_count }}</div>
+    </a>
+    <a href="/shop" class="nav-cta">Shop Now</a>
+  </div>
+</nav>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}<div class="flashes">{% for cat,msg in messages %}<div class="flash {{ cat }}">{{ msg }}</div>{% endfor %}</div>{% endif %}
+{% endwith %}
+{% block content %}{% endblock %}
+<footer>
+  <div>
+    <div class="footer-logo">SOLO<span>DECK</span></div>
+    <div class="footer-copy">© 2026 Solodeck. All rights reserved.</div>
+  </div>
+  <div class="footer-links">
+    <a href="/shop">Shop</a>
+    <a href="/shop?type=digital">Digital</a>
+    <a href="/shop?type=physical">Physical</a>
+    <a href="/admin">Admin</a>
+  </div>
+</footer>
+</body>
+</html>

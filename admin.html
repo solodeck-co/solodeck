@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Admin — Solodeck{% endblock %}
+{% block extra_styles %}
+<style>
+.admin-header{padding:3rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-end}
+.admin-header h1{font-family:'Bebas Neue',sans-serif;font-size:3rem;letter-spacing:0.04em}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin:2rem 3rem}
+.stat-box{background:var(--mid);padding:2rem}
+.stat-box .num{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--electric)}
+.stat-box .lbl{font-size:0.72rem;color:var(--gray);letter-spacing:0.1em;text-transform:uppercase;margin-top:0.25rem}
+.admin-section{padding:0 3rem 3rem}
+.admin-section h2{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:0.04em;margin-bottom:1.5rem;padding-bottom:0.75rem;border-bottom:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:0.82rem}
+th{text-align:left;padding:0.75rem 1rem;background:var(--mid);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray);border-bottom:1px solid var(--line)}
+td{padding:0.75rem 1rem;border-bottom:1px solid var(--line);color:var(--white)}
+tr:hover td{background:rgba(255,255,255,0.02)}
+.add-form{background:var(--mid);border:1px solid var(--line);border-radius:3px;padding:2rem;margin-bottom:2rem}
+.add-form h3{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.06em;margin-bottom:1.5rem;color:var(--electric)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-group label{display:block;font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray);margin-bottom:0.4rem}
+.form-input{width:100%;background:var(--black);border:1px solid var(--line);color:var(--white);padding:0.75rem 1rem;font-family:'Manrope',sans-serif;font-size:0.85rem;border-radius:2px;outline:none;transition:border-color .2s}
+.form-input:focus{border-color:var(--electric)}
+.delete-link{color:#f55;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase}
+.status-confirmed{color:var(--electric)}.status-pending{color:var(--gray)}.status-shipped{color:#88f}.status-delivered{color:#8f8}
+@media(max-width:900px){.stats-row{grid-template-columns:1fr 1fr}.admin-header,.admin-section,.stats-row{padding-left:1.5rem;padding-right:1.5rem}.form-grid{grid-template-columns:1fr}}
+</style>
+{% endblock %}
+{% block content %}
+<div class="admin-header">
+  <div><div class="eyebrow">Dashboard</div><h1>ADMIN PANEL</h1></div>
+  <a href="/" class="btn btn-outline btn-sm">View Store →</a>
+</div>
+<div class="stats-row">
+  <div class="stat-box"><div class="num">{{ products|length }}</div><div class="lbl">Products</div></div>
+  <div class="stat-box"><div class="num">{{ orders|length }}</div><div class="lbl">Orders</div></div>
+  <div class="stat-box"><div class="num">{{ sub_count }}</div><div class="lbl">Subscribers</div></div>
+  <div class="stat-box"><div class="num">${{ "%.0f"|format(revenue) }}</div><div class="lbl">Revenue</div></div>
+</div>
+<div class="admin-section">
+  <h2>ADD PRODUCT</h2>
+  <div class="add-form">
+    <h3>New Product</h3>
+    <form action="/admin/product/add" method="POST">
+      <div class="form-grid">
+        <div class="form-group"><label>Name</label><input class="form-input" type="text" name="name" required/></div>
+        <div class="form-group"><label>Price ($)</label><input class="form-input" type="number" name="price" step="0.01" required/></div>
+        <div class="form-group"><label>Category</label><input class="form-input" type="text" name="category"/></div>
+        <div class="form-group"><label>Type</label><select class="form-input" name="type"><option value="digital">Digital</option><option value="physical">Physical</option></select></div>
+        <div class="form-group"><label>Label (2–4 chars)</label><input class="form-input" type="text" name="image_label" maxlength="4" placeholder="SD"/></div>
+        <div class="form-group"><label>Stock</label><input class="form-input" type="number" name="stock" value="999"/></div>
+      </div>
+      <div class="form-group" style="margin-top:1rem"><label>Description</label><textarea class="form-input" name="description" rows="3" style="resize:vertical"></textarea></div>
+      <div style="display:flex;align-items:center;gap:1rem;margin-top:1.25rem">
+        <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;color:var(--gray);cursor:pointer"><input type="checkbox" name="featured" style="accent-color:var(--electric)"/> Featured on homepage</label>
+        <button type="submit" class="btn btn-electric btn-sm">Add Product</button>
+      </div>
+    </form>
+  </div>
+  <h2>ALL PRODUCTS</h2>
+  <table>
+    <tr><th>ID</th><th>Name</th><th>Type</th><th>Category</th><th>Price</th><th>Stock</th><th>Featured</th><th>Action</th></tr>
+    {% for p in products %}
+    <tr>
+      <td style="color:var(--gray)">#{{ p['id'] }}</td>
+      <td><a href="/product/{{ p['id'] }}" style="color:var(--white)">{{ p['name'] }}</a></td>
+      <td>{% if p['type']=='digital' %}<span class="tag-digital">Digital</span>{% else %}<span class="tag-physical">Physical</span>{% endif %}</td>
+      <td style="color:var(--gray)">{{ p['category'] }}</td>
+      <td style="color:var(--electric);font-weight:600">${{ "%.2f"|format(p['price']) }}</td>
+      <td style="color:var(--gray)">{{ p['stock'] }}</td>
+      <td>{% if p['featured'] %}⚡{% else %}—{% endif %}</td>
+      <td><a href="/admin/product/delete/{{ p['id'] }}" class="delete-link" onclick="return confirm('Delete?')">Delete</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+  <h2 style="margin-top:3rem">RECENT ORDERS</h2>
+  {% if orders %}
+  <table>
+    <tr><th>ID</th><th>Name</th><th>Email</th><th>Total</th><th>Status</th><th>Date</th><th>Update</th></tr>
+    {% for o in orders %}
+    <tr>
+      <td style="color:var(--gray)">#{{ o['id'] }}</td>
+      <td>{{ o['name'] }}</td>
+      <td style="color:var(--gray)">{{ o['email'] }}</td>
+      <td style="color:var(--electric);font-weight:600">${{ "%.2f"|format(o['total']) }}</td>
+      <td class="status-{{ o['status'] }}">{{ o['status'].title() }}</td>
+      <td style="color:var(--gray)">{{ o['created_at'][:10] }}</td>
+      <td>
+        <form action="/admin/order/{{ o['id'] }}/status" method="POST" style="display:flex;gap:0.5rem">
+          <select class="form-input" name="status" style="padding:0.3rem 0.5rem;font-size:0.75rem;width:auto">
+            <option {% if o['status']=='pending' %}selected{% endif %} value="pending">Pending</option>
+            <option {% if o['status']=='confirmed' %}selected{% endif %} value="confirmed">Confirmed</option>
+            <option {% if o['status']=='shipped' %}selected{% endif %} value="shipped">Shipped</option>
+            <option {% if o['status']=='delivered' %}selected{% endif %} value="delivered">Delivered</option>
+          </select>
+          <button type="submit" class="btn btn-dark btn-sm">Save</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p style="color:var(--gray);padding:2rem 0">No orders yet.</p>
+  {% endif %}
+</div>
+{% endblock %}
