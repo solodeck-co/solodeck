@@ -1,12 +1,17 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 import sqlite3, os, json
 
 app = Flask(__name__)
 app.secret_key = "solodeck-secret-2026"
-DB = os.path.join(os.path.dirname(__file__), "database", "solodeck.db")
+
+BASE = os.path.dirname(os.path.abspath(__file__))
+DB   = os.path.join(BASE, "database", "solodeck.db")
+os.makedirs(os.path.join(BASE, "database"), exist_ok=True)
 
 def db():
-    c = sqlite3.connect(DB); c.row_factory = sqlite3.Row; return c
+    c = sqlite3.connect(DB)
+    c.row_factory = sqlite3.Row
+    return c
 
 def init():
     con = db(); c = con.cursor()
@@ -37,6 +42,8 @@ def init():
         ]
         c.executemany("INSERT INTO products (name,description,price,category,type,image_label,stock,featured) VALUES(?,?,?,?,?,?,?,?)", rows)
     con.commit(); con.close()
+
+init()
 
 def get_cart(): return session.get("cart", {})
 def cart_count(): return sum(get_cart().values())
@@ -179,7 +186,5 @@ def order_status(oid):
     con.commit(); con.close(); return redirect(url_for("admin"))
 
 if __name__ == "__main__":
-    os.makedirs(os.path.dirname(DB), exist_ok=True)
-    init()
-    print("\n✓ Solodeck running at http://localhost:5000\n")
-    app.run(debug=False, host='0.0.0.0', port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=False, host='0.0.0.0', port=port)
